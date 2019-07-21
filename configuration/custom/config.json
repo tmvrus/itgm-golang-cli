@@ -1,0 +1,5 @@
+{
+  "api_key" : "some API key",
+  "url" : "https://some.api.url/endpoint",
+  "api_secret" : "secret for api"
+}
