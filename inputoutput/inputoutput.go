@@ -20,8 +20,9 @@ const (
 	prime
 	total
 
-	outputFormatRawText = "Raw text"
-	outputFormatTable   = "Table"
+	outputFormatRawText      = "Raw text"
+	outputFormatTable        = "Table"
+	outputFormatColoredTable = "Colored Table"
 
 	defaultFlagValue = ""
 )
@@ -58,7 +59,7 @@ func main() {
 
 	prompt := promptui.Select{
 		Label: "Select output format",
-		Items: []string{outputFormatRawText, outputFormatTable},
+		Items: []string{outputFormatRawText, outputFormatTable, outputFormatColoredTable},
 	}
 
 	_, format, err := prompt.Run()
@@ -108,7 +109,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		time.Sleep(time.Millisecond * 5)
+		time.Sleep(time.Millisecond)
 	}
 
 	if err := bar.Clear(); err != nil {
@@ -122,7 +123,7 @@ func main() {
 		fmt.Printf("prime: %d\n", result[prime])
 		fmt.Printf("total: %d\n", result[total])
 	} else {
-		renderTable(result)
+		renderTable(result, format == outputFormatColoredTable)
 	}
 
 }
@@ -141,7 +142,7 @@ func isPrime(a int) bool {
 	return true
 }
 
-func renderTable(result []int) {
+func renderTable(result []int, colored bool) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Type", "Count"})
 	table.AppendBulk([][]string{
@@ -150,14 +151,17 @@ func renderTable(result []int) {
 		{"Prime", fmt.Sprintf("%d", result[prime])},
 		{"Total", fmt.Sprintf("%d", result[total])},
 	})
-	table.SetHeaderColor(
-		tablewriter.Colors{tablewriter.FgHiRedColor, tablewriter.Bold},
-		tablewriter.Colors{tablewriter.FgHiRedColor, tablewriter.Bold},
-	)
-	table.SetColumnColor(
-		tablewriter.Colors{tablewriter.FgGreenColor},
-		tablewriter.Colors{tablewriter.FgHiYellowColor},
-	)
+
+	if colored {
+		table.SetHeaderColor(
+			tablewriter.Colors{tablewriter.FgHiRedColor, tablewriter.Bold},
+			tablewriter.Colors{tablewriter.FgHiRedColor, tablewriter.Bold},
+		)
+		table.SetColumnColor(
+			tablewriter.Colors{tablewriter.FgGreenColor},
+			tablewriter.Colors{tablewriter.FgHiYellowColor},
+		)
+	}
 
 	table.Render()
 }
