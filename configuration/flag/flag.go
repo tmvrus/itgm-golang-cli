@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 )
 
 const (
@@ -20,6 +21,7 @@ func main() {
 	if apiKey == defaultFlagValue || apiSecret == defaultFlagValue || url == defaultFlagValue {
 		fmt.Println("not all arguments defined")
 		flag.PrintDefaults()
+		os.Exit(1)
 	}
 
 	fmt.Printf("Key: %s\nSecret: %s\nURL: %s\n", apiKey, apiSecret, url)
